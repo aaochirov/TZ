@@ -17,7 +17,8 @@ func main() {
 
 	operands := strings.Split(input, " ")
 	if len(operands) != 3 {
-		fmt.Println("Слишком много операндов")
+		fmt.Println("Некорректный ввод!")
+		os.Exit(0)
 	}
 	num1Str := operands[0]
 	num2Str := operands[2]
@@ -35,11 +36,24 @@ func main() {
 		num2 = RomanToArabic(num2Str)
 		i++
 	}
+	if calc(num1, operator, num2) < 0 {
+		fmt.Println("Некорректный оператор")
+		os.Exit(0)
+	}
+	if num1 == 0 || num2 == 0 {
+		fmt.Println("Несуществующее число!")
+		os.Exit(0)
+	}
+
 	switch i {
 	case 1:
 		fmt.Println("Разные системы счисления!")
 	case 2:
-		fmt.Println(ArabicToRoman(calc(num1, operator, num2)))
+		if calc(num1, operator, num2) < 1 {
+			fmt.Println("Отрицательный ответ в римском счислении")
+		} else {
+			fmt.Println(ArabicToRoman(calc(num1, operator, num2)))
+		}
 	default:
 		fmt.Println(calc(num1, operator, num2))
 	}
@@ -58,18 +72,12 @@ func calc(num1 int, operator string, num2 int) int {
 			fmt.Println("Деление на ноль!")
 		}
 		return num1 / num2
-	default:
-		return 0
 	}
+	return -1
 }
 func RomanToArabic(r string) int { //Тут на входе стринг с римскими числами из ввода пользователем
 	r = strings.ToUpper(r)
 	mapRoman := map[string]int{"I": 1, "II": 2, "III": 3, "IIII": 4, "IV": 4, "V": 5, "VI": 6, "VII": 7, "VIII": 8, "IX": 9, "X": 10} //Мапа, ключ=римская, значение=арабская
-
-	if _, ok := mapRoman[r]; !ok {
-		fmt.Println("Такого значения нет!")
-		return 0
-	}
 	return mapRoman[r]
 }
 func ArabicToRoman(a int) string { // Аргумент 'а' здесь результат после calc
